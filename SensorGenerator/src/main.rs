@@ -5,6 +5,8 @@ use std::io::BufReader;
 use std::io::prelude::*;
 
 fn main() -> std::io::Result<()> {
+    // /home/aaras/dev/IOT/dataset/household_power_consumption.csv
+
     let file = File::open(env::args().skip(1).next().unwrap())?;
     let reader = BufReader::new(file);
 
@@ -40,8 +42,11 @@ fn main() -> std::io::Result<()> {
                 }
             }
 
-            // let req = http_client.post("http://httpbin.org/post").json(&map);
-            // req.send().unwrap();
+            let req = http_client
+                .post("http://localhost:5137/powerconsumption")
+                .json(&map);
+
+            req.send().unwrap();
         }
     }
 
