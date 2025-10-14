@@ -9,3 +9,10 @@ services:
       - 5432:5432
     environment:
       POSTGRES_PASSWORD: example
+
+  gateway:
+    build:
+      context: ./Gateway
+      dockerfile: ./Dockerfile
+    ports:
+      - "5000:8080"
