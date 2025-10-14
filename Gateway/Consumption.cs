@@ -38,7 +38,7 @@ public class Consumption
         StringBuilder builder = new StringBuilder();
         foreach (PropertyDescriptor pd in TypeDescriptor.GetProperties(this))
         {
-            builder.Append(string.Format("{0} : {1}\n", pd.Name, pd.GetValue(this)?.ToString()));
+            builder.Append(string.Format("{0}: {1}\n", pd.Name, pd.GetValue(this)?.ToString()));
         }
         return builder.ToString();
     }

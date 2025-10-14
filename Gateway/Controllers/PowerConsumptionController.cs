@@ -6,13 +6,13 @@ namespace Gateway.Controllers;
 [Route("[controller]")]
 public class PowerConsumptionController : ControllerBase
 {
-    // private readonly ILogger<PowerConsumptionController> logger;
-    //
-    // public PowerConsumptionController(ILogger<PowerConsumptionController> logger)
-    // {
-    //     this.logger = logger;
-    // }
-    //
+    private readonly ILogger<PowerConsumptionController> logger;
+
+    public PowerConsumptionController(ILogger<PowerConsumptionController> logger)
+    {
+        this.logger = logger;
+    }
+
     // [HttpGet(Name = "GetWeatherForecast")]
     // public IEnumerable<WeatherForecast> Get()
     // {
@@ -24,13 +24,12 @@ public class PowerConsumptionController : ControllerBase
     // })
     // .ToArray();
     // }
-    //
-    //
 
     [HttpPost]
     public async Task<ActionResult> PostConsumption(Consumption consumption)
     {
-        Console.WriteLine(consumption.ToString());
+        this.logger.LogInformation("Receiver consumption report:\n" + consumption.ToString());
+        // Console.WriteLine();
         // Console.WriteLine(consumption.Time.ToString());
 
 

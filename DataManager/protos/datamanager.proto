@@ -1,0 +1,20 @@
+syntax = "proto3";
+import "google/protobuf/empty.proto";
+import "protobuf-ts.proto";
+
+service DataManager {
+  option (ts.server) = GRPC1_SERVER;
+  rpc PostPowerConsumption(PowerConsumptionReport) returns (google.protobuf.Empty);
+}
+
+message PowerConsumptionReport {
+  string date = 1;
+  string time = 2;
+  string global_active_power = 3;
+  string global_reactive_power = 4;
+  string voltage = 5;
+  string global_intensity = 6;
+  string sub1 = 7;
+  string sub2 = 8;
+  string sub3 = 9;
+}
