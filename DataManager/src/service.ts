@@ -15,8 +15,8 @@ export const dataManagerService: IDataManager = {
     call: grpc.ServerUnaryCall<PostPowerConsumptionRequest, PowerConsumption>,
     callback: grpc.sendUnaryData<PowerConsumption>,
   ): void {
+    console.log("Tu sam. Radim!");
     callback(null, PowerConsumption.create({ id: "1" }));
-    throw new Error("Function not implemented.");
   },
   getPowerConsumption: function (
     call: grpc.ServerUnaryCall<GetPowerConsumptionRequest, PowerConsumption>,

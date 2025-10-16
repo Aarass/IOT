@@ -10,9 +10,21 @@ services:
     environment:
       POSTGRES_PASSWORD: example
 
+  manager:
+    build:
+      context: ./DataManager
+      dockerfile: ./Dockerfile
+    environment:
+      PORT: ${MANAGER_PORT}
+    ports:
+      - "${MANAGER_PORT}:${MANAGER_PORT}"
+
   gateway:
     build:
-      context: ./Gateway
-      dockerfile: ./Dockerfile
+      context: .
+      dockerfile: ./Gateway/Dockerfile
+    environment:
+      PORT: ${GATEWAY_PORT}
+      GRPC_SERVER: "http://manager:${MANAGER_PORT}"
     ports:
-      - "5000:8080"
+      - "${GATEWAY_PORT}:${GATEWAY_PORT}"

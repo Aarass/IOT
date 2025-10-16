@@ -2,16 +2,17 @@ import * as grpc from "@grpc/grpc-js";
 import { dataManagerDefinition } from "./grpc/datamanager.grpc-server";
 import { dataManagerService } from "./src/service";
 
+const addr = `0.0.0.0:${process.env.PORT ?? "5001"}`;
+const creds = grpc.ServerCredentials.createInsecure();
+
 const server = new grpc.Server();
 server.addService(dataManagerDefinition, dataManagerService);
-server.bindAsync(
-  "0.0.0.0:5000",
-  grpc.ServerCredentials.createInsecure(),
-  (err: Error | null, port: number) => {
-    if (err) {
-      console.error(`Server error: ${err.message}`);
-    } else {
-      console.log(`Server bound on port: ${port}`);
-    }
-  },
-);
+server.bindAsync(addr, creds, onStart);
+
+function onStart(err: Error | null, port: number) {
+  if (err) {
+    console.error(`Server error: ${err.message}`);
+  } else {
+    console.log(`Server bound on port: ${port}`);
+  }
+}
