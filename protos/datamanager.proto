@@ -1,15 +1,9 @@
 syntax = "proto3";
 import "google/protobuf/timestamp.proto";
 
-// Comment out next line when creating client code
-// import "protobuf-ts.proto";
-
 option csharp_namespace = "Gateway";
 
 service DataManager {
-  // Comment out next line when creating client code
-  // option (ts.server) = GRPC1_SERVER;
-
   rpc PostPowerConsumption(PostPowerConsumptionRequest) returns (PowerConsumption);
   rpc GetPowerConsumption(GetPowerConsumptionRequest) returns (PowerConsumption);
   rpc DeletePowerConsumption(DeletePowerConsumptionRequest) returns (PowerConsumption);

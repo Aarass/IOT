@@ -4,7 +4,7 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "gen": "protoc --ts_out ./grpc --ts_opt long_type_string --proto_path ../protos ../protos/datamanager.proto"
+    "gen": "protoc --ts_out ./grpc --ts_opt long_type_string --ts_opt server_grpc1 --ts_opt force_client_none --proto_path ../protos ../protos/datamanager.proto"
   },
   "devDependencies": {
     "@types/bun": "latest"
