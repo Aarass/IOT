@@ -1,6 +1,8 @@
 use std::fs::File;
 use std::io::BufReader;
 use std::io::prelude::*;
+use std::thread::sleep;
+use std::time::Duration;
 
 use serde_json::json;
 
@@ -45,7 +47,24 @@ fn main() -> std::io::Result<()> {
                     }));
 
                 match req.send() {
-                    Ok(_) => {}
+                    Ok(response) => {
+                        println!("Got response");
+
+                        if response.status().is_success() {
+                            println!("Success");
+                        } else if response.status().is_server_error() {
+                            println!("Server Error");
+                        } else {
+                            println!("Something went wrong");
+                        }
+
+                        println!(
+                            "Response: {}",
+                            response.text().unwrap_or("No response text".to_owned())
+                        );
+
+                        sleep(Duration::from_millis(args.sleep));
+                    }
                     Err(err) => {
                         dbg!(err);
                     }
@@ -125,5 +144,5 @@ struct Args {
 
     /// Amount of time (in miliseconds) to wait between each request
     #[arg(long, default_value_t = 1000)]
-    sleep: u32,
+    sleep: u64,
 }
