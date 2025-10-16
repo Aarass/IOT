@@ -6,32 +6,26 @@ namespace Gateway;
 
 public class Consumption
 {
+    [JsonPropertyName("sensor_id")]
+    public required String SensorId { get; set; }
+
     [JsonPropertyName("date")]
     public required String Date { get; set; }
 
     [JsonPropertyName("time")]
     public required String Time { get; set; }
 
-    [JsonPropertyName("global_active_power")]
-    public required String GlobalActivePower { get; set; }
+    [JsonPropertyName("active_energy")]
+    public required float ActiveEnergy { get; set; }
 
     [JsonPropertyName("global_reactive_power")]
-    public required String GlobalReactivePower { get; set; }
+    public required float GlobalReactivePower { get; set; }
 
     [JsonPropertyName("voltage")]
-    public required String Voltage { get; set; }
+    public required float Voltage { get; set; }
 
     [JsonPropertyName("global_intensity")]
-    public required String GlobalIntensity { get; set; }
-
-    [JsonPropertyName("sub1")]
-    public required String Sub1 { get; set; }
-
-    [JsonPropertyName("sub2")]
-    public required String Sub2 { get; set; }
-
-    [JsonPropertyName("sub3")]
-    public required String Sub3 { get; set; }
+    public required float GlobalIntensity { get; set; }
 
     public override string ToString()
     {
