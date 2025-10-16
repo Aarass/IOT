@@ -1,3 +1,4 @@
+using Grpc.Net.Client;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Gateway.Controllers;
@@ -29,8 +30,24 @@ public class PowerConsumptionController : ControllerBase
     public async Task<ActionResult> PostConsumption(Consumption consumption)
     {
         this.logger.LogInformation("Receiver consumption report:\n" + consumption.ToString());
-        // Console.WriteLine();
-        // Console.WriteLine(consumption.Time.ToString());
+
+        // // The port number must match the port of the gRPC server.
+        using var channel = GrpcChannel.ForAddress("http://localhost:5000");
+        var client = new Gateway.DataManager.DataManagerClient(channel);
+        var reply = await client.PostPowerConsumptionAsync(new Gateway.PowerConsumptionReport
+        {
+            Date = "asdf",
+            Time = "Asd",
+            GlobalActivePower = "Asd",
+            GlobalReactivePower = "Asd",
+            Voltage = "Asd",
+            GlobalIntensity = "Asd",
+            Sub1 = "Asd",
+            Sub2 = "Asd",
+            Sub3 = "Asd",
+        });
+
+        this.logger.LogInformation("Sent rpc request");
 
 
         //    return CreatedAtAction("GetTodoItem", new { id = todoItem.Id }, todoItem);

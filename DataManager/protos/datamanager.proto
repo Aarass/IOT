@@ -1,9 +1,11 @@
 syntax = "proto3";
 import "google/protobuf/empty.proto";
-import "protobuf-ts.proto";
+// import "protobuf-ts.proto";
+
+option csharp_namespace = "Gateway";
 
 service DataManager {
-  option (ts.server) = GRPC1_SERVER;
+  // option (ts.server) = GRPC1_SERVER;
   rpc PostPowerConsumption(PowerConsumptionReport) returns (google.protobuf.Empty);
 }
 
