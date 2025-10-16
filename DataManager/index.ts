@@ -1,19 +1,69 @@
 import * as grpc from "@grpc/grpc-js";
-import type { ServerUnaryCall, sendUnaryData } from "@grpc/grpc-js";
 import {
   dataManagerDefinition,
   type IDataManager,
 } from "./datamanager.grpc-server.ts";
-import type { PowerConsumptionReport } from "./datamanager.ts";
-import { Empty } from "./google/protobuf/empty.ts";
+import type {
+  PostPowerConsumptionRequest,
+  PowerConsumption,
+  GetPowerConsumptionRequest,
+  DeletePowerConsumptionRequest,
+  UpdatePowerConsumptionRequest,
+  IdWithInterval,
+  AvgPowerConsumption,
+  SumPowerConsumption,
+  MinPowerConsumption,
+  MaxPowerConsumption,
+} from "./datamanager.ts";
 
 const exampleService: IDataManager = {
   postPowerConsumption: function (
-    call: ServerUnaryCall<PowerConsumptionReport, Empty>,
-    callback: sendUnaryData<Empty>,
+    call: grpc.ServerUnaryCall<PostPowerConsumptionRequest, PowerConsumption>,
+    callback: grpc.sendUnaryData<PowerConsumption>,
   ): void {
-    console.log("tu sam");
-    callback(null, Empty);
+    throw new Error("Function not implemented.");
+  },
+  getPowerConsumption: function (
+    call: grpc.ServerUnaryCall<GetPowerConsumptionRequest, PowerConsumption>,
+    callback: grpc.sendUnaryData<PowerConsumption>,
+  ): void {
+    throw new Error("Function not implemented.");
+  },
+  deletePowerConsumption: function (
+    call: grpc.ServerUnaryCall<DeletePowerConsumptionRequest, PowerConsumption>,
+    callback: grpc.sendUnaryData<PowerConsumption>,
+  ): void {
+    throw new Error("Function not implemented.");
+  },
+  updatePowerConsumption: function (
+    call: grpc.ServerUnaryCall<UpdatePowerConsumptionRequest, PowerConsumption>,
+    callback: grpc.sendUnaryData<PowerConsumption>,
+  ): void {
+    throw new Error("Function not implemented.");
+  },
+  getAvgPowerConsumption: function (
+    call: grpc.ServerUnaryCall<IdWithInterval, AvgPowerConsumption>,
+    callback: grpc.sendUnaryData<AvgPowerConsumption>,
+  ): void {
+    throw new Error("Function not implemented.");
+  },
+  getSumPowerConsumption: function (
+    call: grpc.ServerUnaryCall<IdWithInterval, SumPowerConsumption>,
+    callback: grpc.sendUnaryData<SumPowerConsumption>,
+  ): void {
+    throw new Error("Function not implemented.");
+  },
+  getMinPowerConsumption: function (
+    call: grpc.ServerUnaryCall<IdWithInterval, MinPowerConsumption>,
+    callback: grpc.sendUnaryData<MinPowerConsumption>,
+  ): void {
+    throw new Error("Function not implemented.");
+  },
+  getMaxPowerConsumption: function (
+    call: grpc.ServerUnaryCall<IdWithInterval, MaxPowerConsumption>,
+    callback: grpc.sendUnaryData<MaxPowerConsumption>,
+  ): void {
+    throw new Error("Function not implemented.");
   },
 };
 
@@ -30,4 +80,3 @@ server.bindAsync(
     }
   },
 );
-

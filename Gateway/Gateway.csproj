@@ -17,7 +17,7 @@
     </PackageReference>
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.9" />
     <PackageReference Include="NSwag.AspNetCore" Version="14.6.1" />
-    <Protobuf Include="../DataManager/protos/datamanager.proto" GrpcServices="Client" />
+    <Protobuf Include="../protos/datamanager.proto" GrpcServices="Client" />
   </ItemGroup>
 
 </Project>

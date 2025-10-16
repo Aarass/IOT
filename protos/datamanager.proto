@@ -1,0 +1,72 @@
+syntax = "proto3";
+import "google/protobuf/timestamp.proto";
+
+// Comment out next line when creating client code
+// import "protobuf-ts.proto";
+
+option csharp_namespace = "Gateway";
+
+service DataManager {
+  // Comment out next line when creating client code
+  // option (ts.server) = GRPC1_SERVER;
+
+  rpc PostPowerConsumption(PostPowerConsumptionRequest) returns (PowerConsumption);
+  rpc GetPowerConsumption(GetPowerConsumptionRequest) returns (PowerConsumption);
+  rpc DeletePowerConsumption(DeletePowerConsumptionRequest) returns (PowerConsumption);
+  rpc UpdatePowerConsumption(UpdatePowerConsumptionRequest) returns (PowerConsumption);
+
+  rpc GetAvgPowerConsumption(IdWithInterval) returns (PowerConsumptionValues);
+  rpc GetSumPowerConsumption(IdWithInterval) returns (PowerConsumptionValues);
+  rpc GetMinPowerConsumption(IdWithInterval) returns (PowerConsumptionValues);
+  rpc GetMaxPowerConsumption(IdWithInterval) returns (PowerConsumptionValues);
+}
+
+message PowerConsumption {
+  string id = 1;
+  string sensor_id = 2;
+  google.protobuf.Timestamp datetime = 3;
+  float active_energy = 4;
+  float global_reactive_power = 5;
+  float voltage = 6;
+  float global_intensity = 7;
+}
+
+message GetPowerConsumptionRequest {
+  string id = 1;
+}
+
+message DeletePowerConsumptionRequest {
+  string id = 1;
+}
+
+message PostPowerConsumptionRequest {
+  string sensor_id = 1;
+  google.protobuf.Timestamp datetime = 2;
+  float active_energy = 3;
+  float global_reactive_power = 4;
+  float voltage = 5;
+  float global_intensity = 6;
+}
+
+message UpdatePowerConsumptionRequest {
+  string id = 1;
+  string sensor_id = 2;
+  google.protobuf.Timestamp datetime = 3;
+  float active_energy = 4;
+  float global_reactive_power = 5;
+  float voltage = 6;
+  float global_intensity = 7;
+}
+
+message IdWithInterval {
+  string id = 1;
+  optional google.protobuf.Timestamp after = 2;
+  optional google.protobuf.Timestamp before = 3;
+}
+
+message PowerConsumptionValues {
+  float active_energy = 1;
+  float global_reactive_power = 2;
+  float voltage = 3;
+  float global_intensity = 4;
+}

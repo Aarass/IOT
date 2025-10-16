@@ -79,17 +79,13 @@ public class PowerConsumptionController : ControllerBase
 
     private async Task SendTestGrpc()
     {
-        var reply = await client.PostPowerConsumptionAsync(new Gateway.PowerConsumptionReport
+        var reply = await client.PostPowerConsumptionAsync(new Gateway.PostPowerConsumptionRequest
         {
-            Date = "asdf",
-            Time = "Asd",
-            GlobalActivePower = "Asd",
-            GlobalReactivePower = "Asd",
-            Voltage = "Asd",
-            GlobalIntensity = "Asd",
-            Sub1 = "Asd",
-            Sub2 = "Asd",
-            Sub3 = "Asd",
+            Datetime = new Google.Protobuf.WellKnownTypes.Timestamp(),
+            ActiveEnergy = 50f,
+            GlobalReactivePower = .05f,
+            Voltage = 240f,
+            GlobalIntensity = 10f,
         });
 
         this.logger.LogInformation("Sent rpc request");
