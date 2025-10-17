@@ -25,6 +25,8 @@ export interface PowerConsumption {
      */
     sensorId: string;
     /**
+     * required
+     *
      * @generated from protobuf field: google.protobuf.Timestamp datetime = 3
      */
     datetime?: Timestamp;

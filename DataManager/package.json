@@ -7,7 +7,8 @@
     "gen": "protoc --ts_out ./grpc --ts_opt long_type_string --ts_opt server_grpc1 --ts_opt force_client_none --proto_path ../protos ../protos/datamanager.proto"
   },
   "devDependencies": {
-    "@types/bun": "latest"
+    "@types/bun": "latest",
+    "dbmate": "^2.28.0"
   },
   "peerDependencies": {
     "typescript": "^5"
@@ -16,6 +17,8 @@
     "@grpc/grpc-js": "^1.14.0",
     "@protobuf-ts/plugin": "^2.11.1",
     "@protobuf-ts/runtime": "^2.11.1",
+    "dotenv": "^17.2.3",
+    "postgres": "^3.4.7",
     "protoc": "^32.1.0"
   }
 }

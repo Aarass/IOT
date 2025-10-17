@@ -9,3 +9,4 @@ Notes:
 Date;Time;Global_active_power;Global_reactive_power;Voltage;Global_intensity;Sub_metering_1;Sub_metering_2;Sub_metering_3
 30/4/2007;14:23:00;?;?;?;?;?;?;
 30/4/2007;14:24:00;0.232;0.078;234.570;1.000;0.000;0.000;0.000
+

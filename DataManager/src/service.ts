@@ -9,15 +9,34 @@ import {
   type PowerConsumptionValues,
   type UpdatePowerConsumptionRequest,
 } from "../grpc/datamanager.ts";
+import { PowerConsumptionRepository } from "./repositories/PowerConsumptionRepository.ts";
+import { Timestamp } from "../grpc/google/protobuf/timestamp.ts";
 
 export const dataManagerService: IDataManager = {
-  postPowerConsumption: function (
+  postPowerConsumption: async function (
     call: grpc.ServerUnaryCall<PostPowerConsumptionRequest, PowerConsumption>,
     callback: grpc.sendUnaryData<PowerConsumption>,
-  ): void {
+  ) {
     console.log("Tu sam. Radim!");
-    callback(null, PowerConsumption.create({ id: "1" }));
+
+    const res = await PowerConsumptionRepository.createPowerConsumptionRecord({
+      ...call.request,
+      datetime: call.request.datetime
+        ? Timestamp.toDate(call.request.datetime)
+        : new Date(),
+    });
+
+    console.log(res);
+
+    callback(
+      null,
+      PowerConsumption.create({
+        ...res,
+        datetime: Timestamp.fromDate(res.datetime),
+      }),
+    );
   },
+
   getPowerConsumption: function (
     call: grpc.ServerUnaryCall<GetPowerConsumptionRequest, PowerConsumption>,
     callback: grpc.sendUnaryData<PowerConsumption>,

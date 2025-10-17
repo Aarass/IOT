@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Google.Protobuf.WellKnownTypes;
 
 namespace Gateway.Controllers;
 
@@ -18,13 +19,45 @@ public class PowerConsumptionController : ControllerBase
     [HttpPost]
     public async Task<ActionResult> PostConsumption(Consumption consumption)
     {
-        this.logger.LogInformation("Receiver consumption report:\n" + consumption.ToString());
+        this.logger.LogInformation("Received post consumption report request:\n" + consumption.ToString());
 
-        await this.SendTestGrpc();
+        var dateParts = consumption.Date.Split('/');
+        if (dateParts == null || dateParts.Length != 3)
+        {
+            throw new Exception("Something went wrong");
+        }
 
-        // return CreatedAtAction("GetTodoItem", new { id = todoItem.Id }, todoItem);
-        // return CreatedAtAction(nameof(GetTodoItem), new { id = todoItem.Id }, todoItem);
-        return Ok();
+        var timeParts = consumption.Time.Split(':');
+        if (timeParts == null || timeParts.Length != 3)
+        {
+            throw new Exception("Something went wrong");
+        }
+
+        var date = new DateTime(int.Parse(dateParts[2]), int.Parse(dateParts[1]), int.Parse(dateParts[0]), int.Parse(timeParts[0]), int.Parse(timeParts[1]), int.Parse(timeParts[2]), DateTimeKind.Utc);
+
+        this.logger.LogInformation("About to make grpc request");
+        var reply = await client.PostPowerConsumptionAsync(new Gateway.PostPowerConsumptionRequest
+        {
+            SensorId = consumption.SensorId,
+            Datetime = Timestamp.FromDateTime(date),
+            ActiveEnergy = consumption.ActiveEnergy,
+            GlobalReactivePower = consumption.GlobalReactivePower,
+            Voltage = consumption.Voltage,
+            GlobalIntensity = consumption.GlobalIntensity,
+        });
+        this.logger.LogInformation("Sent grpc request");
+
+        if (reply != null)
+        {
+            this.logger.LogInformation("Got reply:\n" + reply.ToString());
+        }
+        else
+        {
+            throw new Exception("Server did not return an object");
+        }
+
+        // return Ok();
+        return CreatedAtAction(nameof(PostConsumption), reply);
     }
 
     [HttpGet("{id}")]
@@ -75,19 +108,5 @@ public class PowerConsumptionController : ControllerBase
     {
         this.logger.LogInformation("Max req");
         return Ok();
-    }
-
-    private async Task SendTestGrpc()
-    {
-        var reply = await client.PostPowerConsumptionAsync(new Gateway.PostPowerConsumptionRequest
-        {
-            Datetime = new Google.Protobuf.WellKnownTypes.Timestamp(),
-            ActiveEnergy = 50f,
-            GlobalReactivePower = .05f,
-            Voltage = 240f,
-            GlobalIntensity = 10f,
-        });
-
-        this.logger.LogInformation("Sent rpc request");
     }
 }
