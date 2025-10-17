@@ -52,7 +52,7 @@ export const PowerConsumptionRepository = {
     dto: GetCrunchedDataDto,
   ): Promise<CrunchedDataDto> {
     const [res] = await sql<[CrunchedDataDto]>`
-      SELECT avg(active_energy) as active_energy_avg, avg(global_reactive_power) as global_reactive_power_avg, avg(voltage) as voltage_avg, avg(global_intensity) as global_intensity_avg
+      SELECT avg(active_energy) as active_energy, avg(global_reactive_power) as global_reactive_power, avg(voltage) as voltage, avg(global_intensity) as global_intensity
       FROM power_consumption
       WHERE sensor_id = ${dto.sensorId} ${getIntervalFilter(dto)};`;
 
@@ -63,7 +63,7 @@ export const PowerConsumptionRepository = {
     dto: GetCrunchedDataDto,
   ): Promise<CrunchedDataDto> {
     const [res] = await sql<[CrunchedDataDto]>`
-      SELECT sum(active_energy) as active_energy_sum, sum(global_reactive_power) as global_reactive_power_sum, sum(voltage) as voltage_sum, sum(global_intensity) as global_intensity_sum
+      SELECT sum(active_energy) as active_energy, sum(global_reactive_power) as global_reactive_power, sum(voltage) as voltage, sum(global_intensity) as global_intensity
       FROM power_consumption
       WHERE sensor_id = ${dto.sensorId} ${getIntervalFilter(dto)};`;
 
@@ -74,7 +74,7 @@ export const PowerConsumptionRepository = {
     dto: GetCrunchedDataDto,
   ): Promise<CrunchedDataDto> {
     const [res] = await sql<[CrunchedDataDto]>`
-      SELECT min(active_energy) as active_energy_min, min(global_reactive_power) as global_reactive_power_min, min(voltage) as voltage_min, min(global_intensity) as global_intensity_min
+      SELECT min(active_energy) as active_energy, min(global_reactive_power) as global_reactive_power, min(voltage) as voltage, min(global_intensity) as global_intensity
       FROM power_consumption
       WHERE sensor_id = ${dto.sensorId};`;
 
@@ -85,7 +85,7 @@ export const PowerConsumptionRepository = {
     dto: GetCrunchedDataDto,
   ): Promise<CrunchedDataDto> {
     const [res] = await sql<[CrunchedDataDto]>`
-      SELECT max(active_energy) as active_energy_max, max(global_reactive_power) as global_reactive_power_max, max(voltage) as voltage_max, max(global_intensity) as global_intensity_max
+      SELECT max(active_energy) as active_energy, max(global_reactive_power) as global_reactive_power, max(voltage) as voltage, max(global_intensity) as global_intensity
       FROM power_consumption
       WHERE sensor_id = ${dto.sensorId} ${getIntervalFilter(dto)};`;
     return res;

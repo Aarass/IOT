@@ -2,11 +2,11 @@ import * as grpc from "@grpc/grpc-js";
 import { type IDataManager } from "../grpc/datamanager.grpc-server.ts";
 import {
   PowerConsumption,
+  PowerConsumptionValues,
   type DeletePowerConsumptionRequest,
   type GetPowerConsumptionRequest,
   type IdWithInterval,
   type PostPowerConsumptionRequest,
-  type PowerConsumptionValues,
   type UpdatePowerConsumptionRequest,
 } from "../grpc/datamanager.ts";
 import { PowerConsumptionRepository } from "./repositories/PowerConsumptionRepository.ts";
@@ -17,16 +17,12 @@ export const dataManagerService: IDataManager = {
     call: grpc.ServerUnaryCall<PostPowerConsumptionRequest, PowerConsumption>,
     callback: grpc.sendUnaryData<PowerConsumption>,
   ) {
-    console.log("Tu sam. Radim!");
-
     const res = await PowerConsumptionRepository.createPowerConsumptionRecord({
       ...call.request,
       datetime: call.request.datetime
         ? Timestamp.toDate(call.request.datetime)
         : new Date(),
     });
-
-    console.log(res);
 
     callback(
       null,
@@ -37,46 +33,105 @@ export const dataManagerService: IDataManager = {
     );
   },
 
-  getPowerConsumption: function (
+  getPowerConsumption: async function (
     call: grpc.ServerUnaryCall<GetPowerConsumptionRequest, PowerConsumption>,
     callback: grpc.sendUnaryData<PowerConsumption>,
-  ): void {
-    throw new Error("Function not implemented.");
+  ) {
+    const res = await PowerConsumptionRepository.getPowerConsumptionRecord(
+      call.request.id,
+    );
+
+    callback(
+      null,
+      PowerConsumption.create({
+        ...res,
+        datetime: Timestamp.fromDate(res.datetime),
+      }),
+    );
   },
-  deletePowerConsumption: function (
+
+  deletePowerConsumption: async function (
     call: grpc.ServerUnaryCall<DeletePowerConsumptionRequest, PowerConsumption>,
     callback: grpc.sendUnaryData<PowerConsumption>,
-  ): void {
-    throw new Error("Function not implemented.");
+  ) {
+    const res = await PowerConsumptionRepository.deletePowerConsumptionRecord(
+      call.request.id,
+    );
+
+    callback(
+      null,
+      PowerConsumption.create({
+        ...res,
+        datetime: Timestamp.fromDate(res.datetime),
+      }),
+    );
   },
-  updatePowerConsumption: function (
+
+  updatePowerConsumption: async function (
     call: grpc.ServerUnaryCall<UpdatePowerConsumptionRequest, PowerConsumption>,
     callback: grpc.sendUnaryData<PowerConsumption>,
-  ): void {
-    throw new Error("Function not implemented.");
+  ) {
+    const res = await PowerConsumptionRepository.updatePowerConsumptionRecord({
+      ...call.request,
+      datetime: call.request.datetime
+        ? Timestamp.toDate(call.request.datetime)
+        : new Date(),
+    });
+
+    callback(
+      null,
+      PowerConsumption.create({
+        ...res,
+        datetime: Timestamp.fromDate(res.datetime),
+      }),
+    );
   },
-  getAvgPowerConsumption: function (
+
+  getAvgPowerConsumption: async function (
     call: grpc.ServerUnaryCall<IdWithInterval, PowerConsumptionValues>,
     callback: grpc.sendUnaryData<PowerConsumptionValues>,
-  ): void {
-    throw new Error("Function not implemented.");
+  ) {
+    const dto = DtoFromIdWithInterval(call.request);
+    const res = await PowerConsumptionRepository.getAvgPowerConsumption(dto);
+
+    callback(null, PowerConsumptionValues.create(res));
   },
-  getSumPowerConsumption: function (
+
+  getSumPowerConsumption: async function (
     call: grpc.ServerUnaryCall<IdWithInterval, PowerConsumptionValues>,
     callback: grpc.sendUnaryData<PowerConsumptionValues>,
-  ): void {
-    throw new Error("Function not implemented.");
+  ) {
+    const dto = DtoFromIdWithInterval(call.request);
+    const res = await PowerConsumptionRepository.getSumPowerConsumption(dto);
+
+    callback(null, PowerConsumptionValues.create(res));
   },
-  getMinPowerConsumption: function (
+
+  getMinPowerConsumption: async function (
     call: grpc.ServerUnaryCall<IdWithInterval, PowerConsumptionValues>,
     callback: grpc.sendUnaryData<PowerConsumptionValues>,
-  ): void {
-    throw new Error("Function not implemented.");
+  ) {
+    const dto = DtoFromIdWithInterval(call.request);
+    const res = await PowerConsumptionRepository.getMinPowerConsumption(dto);
+
+    callback(null, PowerConsumptionValues.create(res));
   },
-  getMaxPowerConsumption: function (
+
+  getMaxPowerConsumption: async function (
     call: grpc.ServerUnaryCall<IdWithInterval, PowerConsumptionValues>,
     callback: grpc.sendUnaryData<PowerConsumptionValues>,
-  ): void {
-    throw new Error("Function not implemented.");
+  ) {
+    const dto = DtoFromIdWithInterval(call.request);
+    const res = await PowerConsumptionRepository.getMaxPowerConsumption(dto);
+
+    callback(null, PowerConsumptionValues.create(res));
   },
 };
+
+function DtoFromIdWithInterval(data: IdWithInterval) {
+  return {
+    sensorId: data.id,
+    after: data.after ? Timestamp.toDate(data.after) : undefined,
+    before: data.before ? Timestamp.toDate(data.before) : undefined,
+  };
+}
