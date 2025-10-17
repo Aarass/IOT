@@ -54,7 +54,7 @@ export const PowerConsumptionRepository = {
     const [res] = await sql<[CrunchedDataDto]>`
       SELECT avg(active_energy) as active_energy_avg, avg(global_reactive_power) as global_reactive_power_avg, avg(voltage) as voltage_avg, avg(global_intensity) as global_intensity_avg
       FROM power_consumption
-      WHERE sensor_id = ${dto.sensorId};`;
+      WHERE sensor_id = ${dto.sensorId} ${getIntervalFilter(dto)};`;
 
     return res;
   },
@@ -65,7 +65,7 @@ export const PowerConsumptionRepository = {
     const [res] = await sql<[CrunchedDataDto]>`
       SELECT sum(active_energy) as active_energy_sum, sum(global_reactive_power) as global_reactive_power_sum, sum(voltage) as voltage_sum, sum(global_intensity) as global_intensity_sum
       FROM power_consumption
-      WHERE sensor_id = ${dto.sensorId};`;
+      WHERE sensor_id = ${dto.sensorId} ${getIntervalFilter(dto)};`;
 
     return res;
   },
@@ -87,8 +87,26 @@ export const PowerConsumptionRepository = {
     const [res] = await sql<[CrunchedDataDto]>`
       SELECT max(active_energy) as active_energy_max, max(global_reactive_power) as global_reactive_power_max, max(voltage) as voltage_max, max(global_intensity) as global_intensity_max
       FROM power_consumption
-      WHERE sensor_id = ${dto.sensorId};`;
-
+      WHERE sensor_id = ${dto.sensorId} ${getIntervalFilter(dto)};`;
     return res;
   },
 };
+
+/**
+ * Put inside where clause
+ * */
+function getIntervalFilter(dto: GetCrunchedDataDto) {
+  if (!dto.after && !dto.before) {
+    return sql` and true = true `;
+  }
+
+  let after = dto.after
+    ? sql` and datetime > ${dto.after.toISOString()} `
+    : sql``;
+
+  let before = dto.before
+    ? sql` and datetime > ${dto.before.toISOString()} `
+    : sql``;
+
+  return sql`${after} ${before}`;
+}

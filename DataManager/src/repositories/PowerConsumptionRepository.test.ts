@@ -76,31 +76,35 @@ test("delete", async () => {
   expect(res.globalIntensity).toBe(11);
 });
 
-test.skip("avg", async () => {
+test("avg", async () => {
   const res = await PowerConsumptionRepository.getAvgPowerConsumption({
     sensorId: "2",
+    after: new Date(2006, 1),
+    before: new Date(2010, 1),
   });
 
   console.log(res);
 });
 
-test.skip("sum", async () => {
+test("sum", async () => {
   const res = await PowerConsumptionRepository.getSumPowerConsumption({
     sensorId: "2",
+    after: new Date(2006, 1),
   });
 
   console.log(res);
 });
 
-test.skip("min", async () => {
+test("min", async () => {
   const res = await PowerConsumptionRepository.getMinPowerConsumption({
     sensorId: "2",
+    before: new Date(2010, 1),
   });
 
   console.log(res);
 });
 
-test.skip("max", async () => {
+test("max", async () => {
   const res = await PowerConsumptionRepository.getMaxPowerConsumption({
     sensorId: "2",
   });
