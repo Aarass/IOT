@@ -1,5 +1,5 @@
 export interface GetCrunchedDataDto {
-  sensor_id: string;
+  sensorId: string;
   after?: Date;
   before?: Date;
 }
