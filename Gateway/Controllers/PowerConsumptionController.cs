@@ -17,61 +17,93 @@ public class PowerConsumptionController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult> PostConsumption(Consumption consumption)
+    public async Task<ActionResult> PostConsumption(CreateConsumption dto)
     {
-        this.logger.LogInformation("Received post consumption report request:\n" + consumption.ToString());
-
-        var dateParts = consumption.Date.Split('/');
-        if (dateParts == null || dateParts.Length != 3)
-        {
-            throw new Exception("Something went wrong");
-        }
-
-        var timeParts = consumption.Time.Split(':');
-        if (timeParts == null || timeParts.Length != 3)
-        {
-            throw new Exception("Something went wrong");
-        }
-
-        var date = new DateTime(int.Parse(dateParts[2]), int.Parse(dateParts[1]), int.Parse(dateParts[0]), int.Parse(timeParts[0]), int.Parse(timeParts[1]), int.Parse(timeParts[2]), DateTimeKind.Utc);
-
+        this.logger.LogInformation("Received post consumption report request:\n" + dto.ToString());
         this.logger.LogInformation("About to make grpc request");
+
         var reply = await client.PostPowerConsumptionAsync(new Gateway.PostPowerConsumptionRequest
         {
-            SensorId = consumption.SensorId,
-            Datetime = Timestamp.FromDateTime(date),
-            ActiveEnergy = consumption.ActiveEnergy,
-            GlobalReactivePower = consumption.GlobalReactivePower,
-            Voltage = consumption.Voltage,
-            GlobalIntensity = consumption.GlobalIntensity,
+            SensorId = dto.SensorId,
+            Datetime = Timestamp.FromDateTime(ToDateTime(dto.Date, dto.Time)),
+            ActiveEnergy = dto.ActiveEnergy,
+            GlobalReactivePower = dto.GlobalReactivePower,
+            Voltage = dto.Voltage,
+            GlobalIntensity = dto.GlobalIntensity,
         });
+
         this.logger.LogInformation("Sent grpc request");
 
         if (reply != null)
         {
             this.logger.LogInformation("Got reply:\n" + reply.ToString());
+            return CreatedAtAction(nameof(PostConsumption), reply);
         }
         else
         {
-            throw new Exception("Server did not return an object");
+            this.logger.LogError("Server did not returned object");
+            return (ActionResult)Results.InternalServerError();
         }
-
-        // return Ok();
-        return CreatedAtAction(nameof(PostConsumption), reply);
     }
 
     [HttpGet("{id}")]
     public async Task<ActionResult> GetConsumption(long id)
     {
-        this.logger.LogInformation("Http get id: " + id);
-        return Ok();
+        var res = await client.GetPowerConsumptionAsync(new Gateway.GetPowerConsumptionRequest
+        {
+            Id = id.ToString()
+        });
+
+        return Ok(res);
     }
 
     [HttpPatch("{id}")]
-    public async Task<ActionResult> UpdateConsumption(long id)
+    public async Task<ActionResult> UpdateConsumption(long id, UpdateConsumption dto)
     {
-        this.logger.LogInformation("Http update id: " + id);
-        return Ok();
+        var req = new Gateway.UpdatePowerConsumptionRequest();
+        req.Id = id.ToString();
+
+        if (dto.SensorId != null)
+        {
+            req.SensorId = dto.SensorId;
+        }
+
+        if (dto.Date != null && dto.Time != null)
+        {
+            req.Datetime = Timestamp.FromDateTime(ToDateTime(dto.Date, dto.Time));
+        }
+
+        if (dto.ActiveEnergy != null)
+        {
+            req.ActiveEnergy = dto.ActiveEnergy.Value;
+        }
+
+        if (dto.GlobalReactivePower != null)
+        {
+            req.GlobalReactivePower = dto.GlobalReactivePower.Value;
+        }
+
+        if (dto.Voltage != null)
+        {
+            req.Voltage = dto.Voltage.Value;
+        }
+
+        if (dto.GlobalIntensity != null)
+        {
+            req.GlobalIntensity = dto.GlobalIntensity.Value;
+        }
+
+        var reply = await client.UpdatePowerConsumptionAsync(req);
+
+        if (reply != null)
+        {
+            return Ok(reply);
+        }
+        else
+        {
+            this.logger.LogError("Server did not returned object");
+            return (ActionResult)Results.InternalServerError();
+        }
     }
 
     [HttpDelete("{id}")]
@@ -108,5 +140,22 @@ public class PowerConsumptionController : ControllerBase
     {
         this.logger.LogInformation("Max req");
         return Ok();
+    }
+
+    private DateTime ToDateTime(String date, String time)
+    {
+        var dateParts = date.Split('/');
+        if (dateParts == null || dateParts.Length != 3)
+        {
+            throw new Exception("Something went wrong");
+        }
+
+        var timeParts = time.Split(':');
+        if (timeParts == null || timeParts.Length != 3)
+        {
+            throw new Exception("Something went wrong");
+        }
+
+        return new DateTime(int.Parse(dateParts[2]), int.Parse(dateParts[1]), int.Parse(dateParts[0]), int.Parse(timeParts[0]), int.Parse(timeParts[1]), int.Parse(timeParts[2]), DateTimeKind.Utc);
     }
 }

@@ -4,28 +4,28 @@ using System.Text.Json.Serialization;
 
 namespace Gateway;
 
-public class Consumption
+public class UpdateConsumption
 {
     [JsonPropertyName("sensor_id")]
-    public required String SensorId { get; set; }
+    public String? SensorId { get; set; }
 
     [JsonPropertyName("date")]
-    public required String Date { get; set; }
+    public String? Date { get; set; }
 
     [JsonPropertyName("time")]
-    public required String Time { get; set; }
+    public String? Time { get; set; }
 
     [JsonPropertyName("active_energy")]
-    public required float ActiveEnergy { get; set; }
+    public float? ActiveEnergy { get; set; }
 
     [JsonPropertyName("global_reactive_power")]
-    public required float GlobalReactivePower { get; set; }
+    public float? GlobalReactivePower { get; set; }
 
     [JsonPropertyName("voltage")]
-    public required float Voltage { get; set; }
+    public float? Voltage { get; set; }
 
     [JsonPropertyName("global_intensity")]
-    public required float GlobalIntensity { get; set; }
+    public float? GlobalIntensity { get; set; }
 
     public override string ToString()
     {

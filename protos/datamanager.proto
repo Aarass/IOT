@@ -44,12 +44,12 @@ message PostPowerConsumptionRequest {
 
 message UpdatePowerConsumptionRequest {
   string id = 1;
-  string sensor_id = 2;
-  google.protobuf.Timestamp datetime = 3;
-  float active_energy = 4;
-  float global_reactive_power = 5;
-  float voltage = 6;
-  float global_intensity = 7;
+  optional string sensor_id = 2;
+  optional google.protobuf.Timestamp datetime = 3;
+  optional float active_energy = 4;
+  optional float global_reactive_power = 5;
+  optional float voltage = 6;
+  optional float global_intensity = 7;
 }
 
 message IdWithInterval {
@@ -63,4 +63,9 @@ message PowerConsumptionValues {
   float global_reactive_power = 2;
   float voltage = 3;
   float global_intensity = 4;
+}
+
+message User {
+  string name = 1;
+  optional int32 age = 2;
 }

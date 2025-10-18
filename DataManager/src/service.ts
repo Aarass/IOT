@@ -71,11 +71,11 @@ export const dataManagerService: IDataManager = {
     call: grpc.ServerUnaryCall<UpdatePowerConsumptionRequest, PowerConsumption>,
     callback: grpc.sendUnaryData<PowerConsumption>,
   ) {
+    const { datetime, ...rest } = call.request;
+
     const res = await PowerConsumptionRepository.updatePowerConsumptionRecord({
-      ...call.request,
-      datetime: call.request.datetime
-        ? Timestamp.toDate(call.request.datetime)
-        : new Date(),
+      ...rest,
+      ...(datetime ? { datetime: Timestamp.toDate(datetime) } : {}),
     });
 
     callback(

@@ -25,8 +25,6 @@ export interface PowerConsumption {
      */
     sensorId: string;
     /**
-     * required
-     *
      * @generated from protobuf field: google.protobuf.Timestamp datetime = 3
      */
     datetime?: Timestamp;
@@ -103,29 +101,29 @@ export interface UpdatePowerConsumptionRequest {
      */
     id: string;
     /**
-     * @generated from protobuf field: string sensor_id = 2
+     * @generated from protobuf field: optional string sensor_id = 2
      */
-    sensorId: string;
+    sensorId?: string;
     /**
-     * @generated from protobuf field: google.protobuf.Timestamp datetime = 3
+     * @generated from protobuf field: optional google.protobuf.Timestamp datetime = 3
      */
     datetime?: Timestamp;
     /**
-     * @generated from protobuf field: float active_energy = 4
+     * @generated from protobuf field: optional float active_energy = 4
      */
-    activeEnergy: number;
+    activeEnergy?: number;
     /**
-     * @generated from protobuf field: float global_reactive_power = 5
+     * @generated from protobuf field: optional float global_reactive_power = 5
      */
-    globalReactivePower: number;
+    globalReactivePower?: number;
     /**
-     * @generated from protobuf field: float voltage = 6
+     * @generated from protobuf field: optional float voltage = 6
      */
-    voltage: number;
+    voltage?: number;
     /**
-     * @generated from protobuf field: float global_intensity = 7
+     * @generated from protobuf field: optional float global_intensity = 7
      */
-    globalIntensity: number;
+    globalIntensity?: number;
 }
 /**
  * @generated from protobuf message IdWithInterval
@@ -164,6 +162,19 @@ export interface PowerConsumptionValues {
      * @generated from protobuf field: float global_intensity = 4
      */
     globalIntensity: number;
+}
+/**
+ * @generated from protobuf message User
+ */
+export interface User {
+    /**
+     * @generated from protobuf field: string name = 1
+     */
+    name: string;
+    /**
+     * @generated from protobuf field: optional int32 age = 2
+     */
+    age?: number;
 }
 // @generated message type with reflection information, may provide speed optimized methods
 class PowerConsumption$Type extends MessageType<PowerConsumption> {
@@ -444,22 +455,17 @@ class UpdatePowerConsumptionRequest$Type extends MessageType<UpdatePowerConsumpt
     constructor() {
         super("UpdatePowerConsumptionRequest", [
             { no: 1, name: "id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
-            { no: 2, name: "sensor_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 2, name: "sensor_id", kind: "scalar", opt: true, T: 9 /*ScalarType.STRING*/ },
             { no: 3, name: "datetime", kind: "message", T: () => Timestamp },
-            { no: 4, name: "active_energy", kind: "scalar", T: 2 /*ScalarType.FLOAT*/ },
-            { no: 5, name: "global_reactive_power", kind: "scalar", T: 2 /*ScalarType.FLOAT*/ },
-            { no: 6, name: "voltage", kind: "scalar", T: 2 /*ScalarType.FLOAT*/ },
-            { no: 7, name: "global_intensity", kind: "scalar", T: 2 /*ScalarType.FLOAT*/ }
+            { no: 4, name: "active_energy", kind: "scalar", opt: true, T: 2 /*ScalarType.FLOAT*/ },
+            { no: 5, name: "global_reactive_power", kind: "scalar", opt: true, T: 2 /*ScalarType.FLOAT*/ },
+            { no: 6, name: "voltage", kind: "scalar", opt: true, T: 2 /*ScalarType.FLOAT*/ },
+            { no: 7, name: "global_intensity", kind: "scalar", opt: true, T: 2 /*ScalarType.FLOAT*/ }
         ]);
     }
     create(value?: PartialMessage<UpdatePowerConsumptionRequest>): UpdatePowerConsumptionRequest {
         const message = globalThis.Object.create((this.messagePrototype!));
         message.id = "";
-        message.sensorId = "";
-        message.activeEnergy = 0;
-        message.globalReactivePower = 0;
-        message.voltage = 0;
-        message.globalIntensity = 0;
         if (value !== undefined)
             reflectionMergePartial<UpdatePowerConsumptionRequest>(this, message, value);
         return message;
@@ -472,22 +478,22 @@ class UpdatePowerConsumptionRequest$Type extends MessageType<UpdatePowerConsumpt
                 case /* string id */ 1:
                     message.id = reader.string();
                     break;
-                case /* string sensor_id */ 2:
+                case /* optional string sensor_id */ 2:
                     message.sensorId = reader.string();
                     break;
-                case /* google.protobuf.Timestamp datetime */ 3:
+                case /* optional google.protobuf.Timestamp datetime */ 3:
                     message.datetime = Timestamp.internalBinaryRead(reader, reader.uint32(), options, message.datetime);
                     break;
-                case /* float active_energy */ 4:
+                case /* optional float active_energy */ 4:
                     message.activeEnergy = reader.float();
                     break;
-                case /* float global_reactive_power */ 5:
+                case /* optional float global_reactive_power */ 5:
                     message.globalReactivePower = reader.float();
                     break;
-                case /* float voltage */ 6:
+                case /* optional float voltage */ 6:
                     message.voltage = reader.float();
                     break;
-                case /* float global_intensity */ 7:
+                case /* optional float global_intensity */ 7:
                     message.globalIntensity = reader.float();
                     break;
                 default:
@@ -505,23 +511,23 @@ class UpdatePowerConsumptionRequest$Type extends MessageType<UpdatePowerConsumpt
         /* string id = 1; */
         if (message.id !== "")
             writer.tag(1, WireType.LengthDelimited).string(message.id);
-        /* string sensor_id = 2; */
-        if (message.sensorId !== "")
+        /* optional string sensor_id = 2; */
+        if (message.sensorId !== undefined)
             writer.tag(2, WireType.LengthDelimited).string(message.sensorId);
-        /* google.protobuf.Timestamp datetime = 3; */
+        /* optional google.protobuf.Timestamp datetime = 3; */
         if (message.datetime)
             Timestamp.internalBinaryWrite(message.datetime, writer.tag(3, WireType.LengthDelimited).fork(), options).join();
-        /* float active_energy = 4; */
-        if (message.activeEnergy !== 0)
+        /* optional float active_energy = 4; */
+        if (message.activeEnergy !== undefined)
             writer.tag(4, WireType.Bit32).float(message.activeEnergy);
-        /* float global_reactive_power = 5; */
-        if (message.globalReactivePower !== 0)
+        /* optional float global_reactive_power = 5; */
+        if (message.globalReactivePower !== undefined)
             writer.tag(5, WireType.Bit32).float(message.globalReactivePower);
-        /* float voltage = 6; */
-        if (message.voltage !== 0)
+        /* optional float voltage = 6; */
+        if (message.voltage !== undefined)
             writer.tag(6, WireType.Bit32).float(message.voltage);
-        /* float global_intensity = 7; */
-        if (message.globalIntensity !== 0)
+        /* optional float global_intensity = 7; */
+        if (message.globalIntensity !== undefined)
             writer.tag(7, WireType.Bit32).float(message.globalIntensity);
         let u = options.writeUnknownFields;
         if (u !== false)
@@ -665,6 +671,60 @@ class PowerConsumptionValues$Type extends MessageType<PowerConsumptionValues> {
  * @generated MessageType for protobuf message PowerConsumptionValues
  */
 export const PowerConsumptionValues = new PowerConsumptionValues$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class User$Type extends MessageType<User> {
+    constructor() {
+        super("User", [
+            { no: 1, name: "name", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 2, name: "age", kind: "scalar", opt: true, T: 5 /*ScalarType.INT32*/ }
+        ]);
+    }
+    create(value?: PartialMessage<User>): User {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.name = "";
+        if (value !== undefined)
+            reflectionMergePartial<User>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: User): User {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string name */ 1:
+                    message.name = reader.string();
+                    break;
+                case /* optional int32 age */ 2:
+                    message.age = reader.int32();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: User, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string name = 1; */
+        if (message.name !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.name);
+        /* optional int32 age = 2; */
+        if (message.age !== undefined)
+            writer.tag(2, WireType.Varint).int32(message.age);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message User
+ */
+export const User = new User$Type();
 /**
  * @generated ServiceType for protobuf service DataManager
  */
