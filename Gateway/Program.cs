@@ -1,6 +1,12 @@
 string port = Environment.GetEnvironmentVariable("PORT") ?? "5000";
 string grpcServerAddr = Environment.GetEnvironmentVariable("GRPC_SERVER") ?? "http://localhost:5001";
 
+if (args.Contains("test"))
+{
+    await new Gateway.HttpTests(grpcServerAddr).Test();
+    return;
+}
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.WebHost.UseUrls($"http://0.0.0.0:{port}");
@@ -28,3 +34,4 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
 app.Run();
+

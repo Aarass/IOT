@@ -105,7 +105,7 @@ function getIntervalFilter(dto: GetCrunchedDataDto) {
     : sql``;
 
   let before = dto.before
-    ? sql` and datetime > ${dto.before.toISOString()} `
+    ? sql` and datetime < ${dto.before.toISOString()} `
     : sql``;
 
   return sql`${after} ${before}`;

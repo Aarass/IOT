@@ -38,14 +38,15 @@ public class PowerConsumptionController : ControllerBase
             else
             {
                 this.logger.LogError("Server did not return an object");
-                return (ActionResult)Results.InternalServerError();
+                return Problem("Internal Server Error");
             }
+
         }
         catch (Exception err)
         {
             this.logger.LogError("Something went wrong while sending request");
             this.logger.LogError(err.ToString());
-            return (ActionResult)Results.InternalServerError();
+            return Problem("Internal Server Error");
         }
     }
 
@@ -65,7 +66,7 @@ public class PowerConsumptionController : ControllerBase
         {
             this.logger.LogError("Something went wrong while sending request");
             this.logger.LogError(err.ToString());
-            return (ActionResult)Results.InternalServerError();
+            return Problem("Internal Server Error");
         }
     }
 
@@ -116,14 +117,14 @@ public class PowerConsumptionController : ControllerBase
             else
             {
                 this.logger.LogError("Server did not return an object");
-                return (ActionResult)Results.InternalServerError();
+                return Problem("Internal Server Error");
             }
         }
         catch (Exception err)
         {
             this.logger.LogError("Something went wrong while sending request");
             this.logger.LogError(err.ToString());
-            return (ActionResult)Results.InternalServerError();
+            return Problem("Internal Server Error");
         }
     }
 
@@ -145,19 +146,19 @@ public class PowerConsumptionController : ControllerBase
             else
             {
                 this.logger.LogError("Server did not return an object");
-                return (ActionResult)Results.InternalServerError();
+                return Problem("Internal Server Error");
             }
         }
         catch (Exception err)
         {
             this.logger.LogError("Something went wrong while sending request");
             this.logger.LogError(err.ToString());
-            return (ActionResult)Results.InternalServerError();
+            return Problem("Internal Server Error");
         }
     }
 
     [HttpPost("avg/{id}")]
-    public async Task<ActionResult> GetAvg(long id, Interval interval)
+    public async Task<ActionResult> GetAvg(string id, Interval interval)
     {
         try
         {
@@ -170,19 +171,19 @@ public class PowerConsumptionController : ControllerBase
             else
             {
                 this.logger.LogError("Server did not return an object");
-                return (ActionResult)Results.InternalServerError();
+                return Problem("Internal Server Error");
             }
         }
         catch (Exception err)
         {
             this.logger.LogError("Something went wrong while sending request");
             this.logger.LogError(err.ToString());
-            return (ActionResult)Results.InternalServerError();
+            return Problem("Internal Server Error");
         }
     }
 
     [HttpPost("sum/{id}")]
-    public async Task<ActionResult> GetSum(long id, Interval interval)
+    public async Task<ActionResult> GetSum(string id, Interval interval)
     {
         try
         {
@@ -195,19 +196,19 @@ public class PowerConsumptionController : ControllerBase
             else
             {
                 this.logger.LogError("Server did not return an object");
-                return (ActionResult)Results.InternalServerError();
+                return Problem("Internal Server Error");
             }
         }
         catch (Exception err)
         {
             this.logger.LogError("Something went wrong while sending request");
             this.logger.LogError(err.ToString());
-            return (ActionResult)Results.InternalServerError();
+            return Problem("Internal Server Error");
         }
     }
 
     [HttpPost("min/{id}")]
-    public async Task<ActionResult> GetMin(long id, Interval interval)
+    public async Task<ActionResult> GetMin(string id, Interval interval)
     {
         try
         {
@@ -220,19 +221,19 @@ public class PowerConsumptionController : ControllerBase
             else
             {
                 this.logger.LogError("Server did not return an object");
-                return (ActionResult)Results.InternalServerError();
+                return Problem("Internal Server Error");
             }
         }
         catch (Exception err)
         {
             this.logger.LogError("Something went wrong while sending request");
             this.logger.LogError(err.ToString());
-            return (ActionResult)Results.InternalServerError();
+            return Problem("Internal Server Error");
         }
     }
 
     [HttpPost("max/{id}")]
-    public async Task<ActionResult> GetMax(long id, Interval interval)
+    public async Task<ActionResult> GetMax(string id, Interval interval)
     {
         try
         {
@@ -245,14 +246,14 @@ public class PowerConsumptionController : ControllerBase
             else
             {
                 this.logger.LogError("Server did not return an object");
-                return (ActionResult)Results.InternalServerError();
+                return Problem("Internal Server Error");
             }
         }
         catch (Exception err)
         {
             this.logger.LogError("Something went wrong while sending request");
             this.logger.LogError(err.ToString());
-            return (ActionResult)Results.InternalServerError();
+            return Problem("Internal Server Error");
         }
     }
 
@@ -273,11 +274,11 @@ public class PowerConsumptionController : ControllerBase
         return new DateTime(int.Parse(dateParts[2]), int.Parse(dateParts[1]), int.Parse(dateParts[0]), int.Parse(timeParts[0]), int.Parse(timeParts[1]), int.Parse(timeParts[2]), DateTimeKind.Utc);
     }
 
-    private IdWithInterval ToIdWithInterval(long id, Interval interval)
+    private IdWithInterval ToIdWithInterval(string id, Interval interval)
     {
         var res = new Gateway.IdWithInterval
         {
-            Id = id.ToString()
+            Id = id,
         };
 
         if (interval.After != null)
