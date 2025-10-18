@@ -19,9 +19,6 @@ public class PowerConsumptionController : ControllerBase
     [HttpPost]
     public async Task<ActionResult> PostConsumption(CreateConsumption dto)
     {
-        this.logger.LogInformation("Received post consumption report request:\n" + dto.ToString());
-        this.logger.LogInformation("About to make grpc request");
-
         var reply = await client.PostPowerConsumptionAsync(new Gateway.PostPowerConsumptionRequest
         {
             SensorId = dto.SensorId,
@@ -32,11 +29,8 @@ public class PowerConsumptionController : ControllerBase
             GlobalIntensity = dto.GlobalIntensity,
         });
 
-        this.logger.LogInformation("Sent grpc request");
-
         if (reply != null)
         {
-            this.logger.LogInformation("Got reply:\n" + reply.ToString());
             return CreatedAtAction(nameof(PostConsumption), reply);
         }
         else
@@ -109,37 +103,85 @@ public class PowerConsumptionController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<ActionResult> DeleteConsumption(long id)
     {
-        this.logger.LogInformation("Http delete id: " + id);
-        return Ok();
+        var reply = client.DeletePowerConsumption(new Gateway.DeletePowerConsumptionRequest
+        {
+            Id = id.ToString()
+        });
+
+
+        if (reply != null)
+        {
+            return Ok(reply);
+        }
+        else
+        {
+            this.logger.LogError("Server did not returned object");
+            return (ActionResult)Results.InternalServerError();
+        }
     }
 
-
-    [HttpPost("avg")]
-    public async Task<ActionResult> GetAvg(Interval interval)
+    [HttpPost("avg/{id}")]
+    public async Task<ActionResult> GetAvg(long id, Interval interval)
     {
-        this.logger.LogInformation("Avg req");
-        return Ok();
+        var reply = await client.GetAvgPowerConsumptionAsync(ToIdWithInterval(id, interval));
+
+        if (reply != null)
+        {
+            return Ok(reply);
+        }
+        else
+        {
+            this.logger.LogError("Server did not returned object");
+            return (ActionResult)Results.InternalServerError();
+        }
     }
 
-    [HttpPost("sum")]
-    public async Task<ActionResult> GetSum(Interval interval)
+    [HttpPost("sum/{id}")]
+    public async Task<ActionResult> GetSum(long id, Interval interval)
     {
-        this.logger.LogInformation("Sum req");
-        return Ok();
+        var reply = await client.GetSumPowerConsumptionAsync(ToIdWithInterval(id, interval));
+
+        if (reply != null)
+        {
+            return Ok(reply);
+        }
+        else
+        {
+            this.logger.LogError("Server did not returned object");
+            return (ActionResult)Results.InternalServerError();
+        }
     }
 
-    [HttpPost("min")]
-    public async Task<ActionResult> GetMin(Interval interval)
+    [HttpPost("min/{id}")]
+    public async Task<ActionResult> GetMin(long id, Interval interval)
     {
-        this.logger.LogInformation("Min req");
-        return Ok();
+        var reply = await client.GetMinPowerConsumptionAsync(ToIdWithInterval(id, interval));
+
+        if (reply != null)
+        {
+            return Ok(reply);
+        }
+        else
+        {
+            this.logger.LogError("Server did not returned object");
+            return (ActionResult)Results.InternalServerError();
+        }
     }
 
-    [HttpPost("max")]
-    public async Task<ActionResult> GetMax(Interval interval)
+    [HttpPost("max/{id}")]
+    public async Task<ActionResult> GetMax(long id, Interval interval)
     {
-        this.logger.LogInformation("Max req");
-        return Ok();
+        var reply = await client.GetMaxPowerConsumptionAsync(ToIdWithInterval(id, interval));
+
+        if (reply != null)
+        {
+            return Ok(reply);
+        }
+        else
+        {
+            this.logger.LogError("Server did not returned object");
+            return (ActionResult)Results.InternalServerError();
+        }
     }
 
     private DateTime ToDateTime(String date, String time)
@@ -157,5 +199,25 @@ public class PowerConsumptionController : ControllerBase
         }
 
         return new DateTime(int.Parse(dateParts[2]), int.Parse(dateParts[1]), int.Parse(dateParts[0]), int.Parse(timeParts[0]), int.Parse(timeParts[1]), int.Parse(timeParts[2]), DateTimeKind.Utc);
+    }
+
+    private IdWithInterval ToIdWithInterval(long id, Interval interval)
+    {
+        var res = new Gateway.IdWithInterval
+        {
+            Id = id.ToString()
+        };
+
+        if (interval.After != null)
+        {
+            res.After = Timestamp.FromDateTime(interval.After.Value);
+        }
+
+        if (interval.Before != null)
+        {
+            res.Before = Timestamp.FromDateTime(interval.Before.Value);
+        }
+
+        return res;
     }
 }

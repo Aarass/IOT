@@ -7,10 +7,10 @@ namespace Gateway;
 public class Interval
 {
     [JsonPropertyName("after")]
-    public required DateTime After { get; set; }
+    public DateTime? After { get; set; }
 
     [JsonPropertyName("before")]
-    public required DateTime Before { get; set; }
+    public DateTime? Before { get; set; }
 
 
     public override string ToString()
