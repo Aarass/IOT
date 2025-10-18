@@ -19,23 +19,32 @@ public class PowerConsumptionController : ControllerBase
     [HttpPost]
     public async Task<ActionResult> PostConsumption(CreateConsumption dto)
     {
-        var reply = await client.PostPowerConsumptionAsync(new Gateway.PostPowerConsumptionRequest
+        try
         {
-            SensorId = dto.SensorId,
-            Datetime = Timestamp.FromDateTime(ToDateTime(dto.Date, dto.Time)),
-            ActiveEnergy = dto.ActiveEnergy,
-            GlobalReactivePower = dto.GlobalReactivePower,
-            Voltage = dto.Voltage,
-            GlobalIntensity = dto.GlobalIntensity,
-        });
+            var reply = await client.PostPowerConsumptionAsync(new Gateway.PostPowerConsumptionRequest
+            {
+                SensorId = dto.SensorId,
+                Datetime = Timestamp.FromDateTime(ToDateTime(dto.Date, dto.Time)),
+                ActiveEnergy = dto.ActiveEnergy,
+                GlobalReactivePower = dto.GlobalReactivePower,
+                Voltage = dto.Voltage,
+                GlobalIntensity = dto.GlobalIntensity,
+            });
 
-        if (reply != null)
-        {
-            return CreatedAtAction(nameof(PostConsumption), reply);
+            if (reply != null)
+            {
+                return CreatedAtAction(nameof(PostConsumption), reply);
+            }
+            else
+            {
+                this.logger.LogError("Server did not return an object");
+                return (ActionResult)Results.InternalServerError();
+            }
         }
-        else
+        catch (Exception err)
         {
-            this.logger.LogError("Server did not returned object");
+            this.logger.LogError("Something went wrong while sending request");
+            this.logger.LogError(err.ToString());
             return (ActionResult)Results.InternalServerError();
         }
     }
@@ -43,12 +52,21 @@ public class PowerConsumptionController : ControllerBase
     [HttpGet("{id}")]
     public async Task<ActionResult> GetConsumption(long id)
     {
-        var res = await client.GetPowerConsumptionAsync(new Gateway.GetPowerConsumptionRequest
+        try
         {
-            Id = id.ToString()
-        });
+            var res = await client.GetPowerConsumptionAsync(new Gateway.GetPowerConsumptionRequest
+            {
+                Id = id.ToString()
+            });
 
-        return Ok(res);
+            return Ok(res);
+        }
+        catch (Exception err)
+        {
+            this.logger.LogError("Something went wrong while sending request");
+            this.logger.LogError(err.ToString());
+            return (ActionResult)Results.InternalServerError();
+        }
     }
 
     [HttpPatch("{id}")]
@@ -87,15 +105,24 @@ public class PowerConsumptionController : ControllerBase
             req.GlobalIntensity = dto.GlobalIntensity.Value;
         }
 
-        var reply = await client.UpdatePowerConsumptionAsync(req);
+        try
+        {
+            var reply = await client.UpdatePowerConsumptionAsync(req);
 
-        if (reply != null)
-        {
-            return Ok(reply);
+            if (reply != null)
+            {
+                return Ok(reply);
+            }
+            else
+            {
+                this.logger.LogError("Server did not return an object");
+                return (ActionResult)Results.InternalServerError();
+            }
         }
-        else
+        catch (Exception err)
         {
-            this.logger.LogError("Server did not returned object");
+            this.logger.LogError("Something went wrong while sending request");
+            this.logger.LogError(err.ToString());
             return (ActionResult)Results.InternalServerError();
         }
     }
@@ -103,19 +130,28 @@ public class PowerConsumptionController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<ActionResult> DeleteConsumption(long id)
     {
-        var reply = client.DeletePowerConsumption(new Gateway.DeletePowerConsumptionRequest
-        {
-            Id = id.ToString()
-        });
 
-
-        if (reply != null)
+        try
         {
-            return Ok(reply);
+            var reply = await client.DeletePowerConsumptionAsync(new Gateway.DeletePowerConsumptionRequest
+            {
+                Id = id.ToString()
+            });
+
+            if (reply != null)
+            {
+                return Ok(reply);
+            }
+            else
+            {
+                this.logger.LogError("Server did not return an object");
+                return (ActionResult)Results.InternalServerError();
+            }
         }
-        else
+        catch (Exception err)
         {
-            this.logger.LogError("Server did not returned object");
+            this.logger.LogError("Something went wrong while sending request");
+            this.logger.LogError(err.ToString());
             return (ActionResult)Results.InternalServerError();
         }
     }
@@ -123,15 +159,24 @@ public class PowerConsumptionController : ControllerBase
     [HttpPost("avg/{id}")]
     public async Task<ActionResult> GetAvg(long id, Interval interval)
     {
-        var reply = await client.GetAvgPowerConsumptionAsync(ToIdWithInterval(id, interval));
+        try
+        {
+            var reply = await client.GetAvgPowerConsumptionAsync(ToIdWithInterval(id, interval));
 
-        if (reply != null)
-        {
-            return Ok(reply);
+            if (reply != null)
+            {
+                return Ok(reply);
+            }
+            else
+            {
+                this.logger.LogError("Server did not return an object");
+                return (ActionResult)Results.InternalServerError();
+            }
         }
-        else
+        catch (Exception err)
         {
-            this.logger.LogError("Server did not returned object");
+            this.logger.LogError("Something went wrong while sending request");
+            this.logger.LogError(err.ToString());
             return (ActionResult)Results.InternalServerError();
         }
     }
@@ -139,15 +184,24 @@ public class PowerConsumptionController : ControllerBase
     [HttpPost("sum/{id}")]
     public async Task<ActionResult> GetSum(long id, Interval interval)
     {
-        var reply = await client.GetSumPowerConsumptionAsync(ToIdWithInterval(id, interval));
+        try
+        {
+            var reply = await client.GetSumPowerConsumptionAsync(ToIdWithInterval(id, interval));
 
-        if (reply != null)
-        {
-            return Ok(reply);
+            if (reply != null)
+            {
+                return Ok(reply);
+            }
+            else
+            {
+                this.logger.LogError("Server did not return an object");
+                return (ActionResult)Results.InternalServerError();
+            }
         }
-        else
+        catch (Exception err)
         {
-            this.logger.LogError("Server did not returned object");
+            this.logger.LogError("Something went wrong while sending request");
+            this.logger.LogError(err.ToString());
             return (ActionResult)Results.InternalServerError();
         }
     }
@@ -155,15 +209,24 @@ public class PowerConsumptionController : ControllerBase
     [HttpPost("min/{id}")]
     public async Task<ActionResult> GetMin(long id, Interval interval)
     {
-        var reply = await client.GetMinPowerConsumptionAsync(ToIdWithInterval(id, interval));
+        try
+        {
+            var reply = await client.GetMinPowerConsumptionAsync(ToIdWithInterval(id, interval));
 
-        if (reply != null)
-        {
-            return Ok(reply);
+            if (reply != null)
+            {
+                return Ok(reply);
+            }
+            else
+            {
+                this.logger.LogError("Server did not return an object");
+                return (ActionResult)Results.InternalServerError();
+            }
         }
-        else
+        catch (Exception err)
         {
-            this.logger.LogError("Server did not returned object");
+            this.logger.LogError("Something went wrong while sending request");
+            this.logger.LogError(err.ToString());
             return (ActionResult)Results.InternalServerError();
         }
     }
@@ -171,15 +234,24 @@ public class PowerConsumptionController : ControllerBase
     [HttpPost("max/{id}")]
     public async Task<ActionResult> GetMax(long id, Interval interval)
     {
-        var reply = await client.GetMaxPowerConsumptionAsync(ToIdWithInterval(id, interval));
+        try
+        {
+            var reply = await client.GetMaxPowerConsumptionAsync(ToIdWithInterval(id, interval));
 
-        if (reply != null)
-        {
-            return Ok(reply);
+            if (reply != null)
+            {
+                return Ok(reply);
+            }
+            else
+            {
+                this.logger.LogError("Server did not return an object");
+                return (ActionResult)Results.InternalServerError();
+            }
         }
-        else
+        catch (Exception err)
         {
-            this.logger.LogError("Server did not returned object");
+            this.logger.LogError("Something went wrong while sending request");
+            this.logger.LogError(err.ToString());
             return (ActionResult)Results.InternalServerError();
         }
     }
