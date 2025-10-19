@@ -10,6 +10,12 @@ services:
     environment:
       POSTGRES_PASSWORD: example
 
+  broker:
+    image: emqx:latest
+    ports:
+      - 18083:18083
+      - 1883:1883
+
   manager:
     build:
       context: ./DataManager

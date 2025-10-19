@@ -13,6 +13,7 @@ import {
 import { Timestamp } from "../grpc/google/protobuf/timestamp.ts";
 import { dbg } from "../utils/dbg.ts";
 import { PowerConsumptionRepository } from "./repositories/PowerConsumptionRepository.ts";
+import { mqttClient } from "../mqtt/mqttClient.ts";
 
 export const dataManagerService: IDataManager = {
   postPowerConsumption: async function (
@@ -41,6 +42,11 @@ export const dataManagerService: IDataManager = {
             datetime: Timestamp.fromDate(res.datetime),
           }),
         );
+
+        (async () => {
+          const message = Buffer.from(JSON.stringify(res));
+          await mqttClient.publishAsync("powerConsumption", message);
+        })();
       }
     } catch (err) {
       dbg(err);

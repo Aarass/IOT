@@ -18,6 +18,7 @@
     "@protobuf-ts/plugin": "^2.11.1",
     "@protobuf-ts/runtime": "^2.11.1",
     "dotenv": "^17.2.3",
+    "mqtt": "^5.14.1",
     "postgres": "^3.4.7",
     "protoc": "^32.1.0"
   }
