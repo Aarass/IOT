@@ -8,7 +8,7 @@ services:
     ports:
       - 5432:5432
     environment:
-      POSTGRES_PASSWORD: example
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
 
   broker:
     image: emqx:latest
@@ -16,12 +16,15 @@ services:
       - 18083:18083
       - 1883:1883
 
-  manager:
+  datamanager:
     build:
       context: ./DataManager
       dockerfile: ./Dockerfile
     environment:
       PORT: ${MANAGER_PORT}
+      DATABASE_URL: ${DATABASE_URL}
+      MQTT_HOST: ${MQTT_HOST}
+      MQTT_PORT: ${MQTT_PORT}
     ports:
       - "${MANAGER_PORT}:${MANAGER_PORT}"
 
@@ -31,6 +34,22 @@ services:
       dockerfile: ./Gateway/Dockerfile
     environment:
       PORT: ${GATEWAY_PORT}
-      GRPC_SERVER: "http://manager:${MANAGER_PORT}"
+      GRPC_SERVER: "http://datamanager:${MANAGER_PORT}"
     ports:
       - "${GATEWAY_PORT}:${GATEWAY_PORT}"
+
+  mqttclient:
+    build:
+      context: ./MQTTClient
+      dockerfile: ./Dockerfile
+    environment:
+      MQTT_HOST: ${MQTT_HOST}
+      MQTT_PORT: ${MQTT_PORT}
+
+  eventmanager:
+    build:
+      context: ./EventManager
+      dockerfile: ./Dockerfile
+    environment:
+      MQTT_HOST: ${MQTT_HOST}
+      MQTT_PORT: ${MQTT_PORT}

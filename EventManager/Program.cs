@@ -53,11 +53,14 @@ async Task NotifyAbnormalValues(SensorData data)
 
 async Task<IMqttClient> ConnectToBroker(string clientId)
 {
+    string host = Environment.GetEnvironmentVariable("MQTT_HOST") ?? "localhost";
+    int port = int.Parse(Environment.GetEnvironmentVariable("MQTT_PORT") ?? "1883");
+
     var factory = new MqttClientFactory();
     var client = factory.CreateMqttClient();
 
     var connectResult = await client.ConnectAsync(new MqttClientOptionsBuilder()
-        .WithTcpServer("localhost", 1883)
+        .WithTcpServer(host, port)
         .WithClientId(clientId)
         .WithCleanSession()
         .Build());
