@@ -9,10 +9,11 @@ namespace Gateway
     public class HttpTests
     {
         public PowerConsumptionController controller;
+        private GrpcChannel channel;
 
         public HttpTests(String grpcServerAddr)
         {
-            var channel = GrpcChannel.ForAddress(new Uri(grpcServerAddr));
+            this.channel = GrpcChannel.ForAddress(new Uri(grpcServerAddr));
             var client = new Gateway.DataManager.DataManagerClient(channel);
 
             var logger = LoggerFactory.Create(builder =>
@@ -27,6 +28,15 @@ namespace Gateway
 
         public async Task Test()
         {
+            try
+            {
+                await this.channel.ConnectAsync().WaitAsync(TimeSpan.FromSeconds(1));
+            }
+            catch (System.TimeoutException)
+            {
+                throw new Exception("GRPC server timeouted. Is it running?");
+            }
+
             await Test1();
             await Test2();
             await Test3();

@@ -29,11 +29,19 @@ export const dataManagerService: IDataManager = {
         },
       );
 
-      const reply = PowerConsumption.create({
-        ...res,
-        datetime: Timestamp.fromDate(res.datetime),
-      });
-      callback(null, reply);
+      if (res === null) {
+        callback(
+          new grpc.StatusBuilder().withCode(grpc.status.NOT_FOUND).build(),
+        );
+      } else {
+        callback(
+          null,
+          PowerConsumption.create({
+            ...res,
+            datetime: Timestamp.fromDate(res.datetime),
+          }),
+        );
+      }
     } catch (err) {
       dbg(err);
       callback(generateError(err));
@@ -49,11 +57,19 @@ export const dataManagerService: IDataManager = {
         call.request.id,
       );
 
-      const reply = PowerConsumption.create({
-        ...res,
-        datetime: Timestamp.fromDate(res.datetime),
-      });
-      callback(null, reply);
+      if (res === null) {
+        callback(
+          new grpc.StatusBuilder().withCode(grpc.status.NOT_FOUND).build(),
+        );
+      } else {
+        callback(
+          null,
+          PowerConsumption.create({
+            ...res,
+            datetime: Timestamp.fromDate(res.datetime),
+          }),
+        );
+      }
     } catch (err) {
       dbg(err);
       callback(generateError(err));
@@ -69,11 +85,19 @@ export const dataManagerService: IDataManager = {
         call.request.id,
       );
 
-      const reply = PowerConsumption.create({
-        ...res,
-        datetime: Timestamp.fromDate(res.datetime),
-      });
-      callback(null, reply);
+      if (res === null) {
+        callback(
+          new grpc.StatusBuilder().withCode(grpc.status.NOT_FOUND).build(),
+        );
+      } else {
+        callback(
+          null,
+          PowerConsumption.create({
+            ...res,
+            datetime: Timestamp.fromDate(res.datetime),
+          }),
+        );
+      }
     } catch (err) {
       dbg(err);
       callback(generateError(err));
@@ -94,11 +118,19 @@ export const dataManagerService: IDataManager = {
         },
       );
 
-      const reply = PowerConsumption.create({
-        ...res,
-        datetime: Timestamp.fromDate(res.datetime),
-      });
-      callback(null, reply);
+      if (res === null) {
+        callback(
+          new grpc.StatusBuilder().withCode(grpc.status.NOT_FOUND).build(),
+        );
+      } else {
+        callback(
+          null,
+          PowerConsumption.create({
+            ...res,
+            datetime: Timestamp.fromDate(res.datetime),
+          }),
+        );
+      }
     } catch (err) {
       dbg(err);
       callback(generateError(err));
@@ -113,8 +145,13 @@ export const dataManagerService: IDataManager = {
       const dto = dtoFromIdWithInterval(call.request);
       const res = await PowerConsumptionRepository.getAvgPowerConsumption(dto);
 
-      const reply = PowerConsumptionValues.create(res);
-      callback(null, reply);
+      if (res === null) {
+        callback(
+          new grpc.StatusBuilder().withCode(grpc.status.NOT_FOUND).build(),
+        );
+      } else {
+        callback(null, PowerConsumptionValues.create(res));
+      }
     } catch (err) {
       dbg(err);
       callback(generateError(err));
@@ -129,8 +166,13 @@ export const dataManagerService: IDataManager = {
       const dto = dtoFromIdWithInterval(call.request);
       const res = await PowerConsumptionRepository.getSumPowerConsumption(dto);
 
-      const reply = PowerConsumptionValues.create(res);
-      callback(null, reply);
+      if (res === null) {
+        callback(
+          new grpc.StatusBuilder().withCode(grpc.status.NOT_FOUND).build(),
+        );
+      } else {
+        callback(null, PowerConsumptionValues.create(res));
+      }
     } catch (err) {
       dbg(err);
       callback(generateError(err));
@@ -145,8 +187,13 @@ export const dataManagerService: IDataManager = {
       const dto = dtoFromIdWithInterval(call.request);
       const res = await PowerConsumptionRepository.getMinPowerConsumption(dto);
 
-      const reply = PowerConsumptionValues.create(res);
-      callback(null, reply);
+      if (res === null) {
+        callback(
+          new grpc.StatusBuilder().withCode(grpc.status.NOT_FOUND).build(),
+        );
+      } else {
+        callback(null, PowerConsumptionValues.create(res));
+      }
     } catch (err) {
       dbg(err);
       callback(generateError(err));
@@ -161,8 +208,13 @@ export const dataManagerService: IDataManager = {
       const dto = dtoFromIdWithInterval(call.request);
       const res = await PowerConsumptionRepository.getMaxPowerConsumption(dto);
 
-      const reply = PowerConsumptionValues.create(res);
-      callback(null, reply);
+      if (res === null) {
+        callback(
+          new grpc.StatusBuilder().withCode(grpc.status.NOT_FOUND).build(),
+        );
+      } else {
+        callback(null, PowerConsumptionValues.create(res));
+      }
     } catch (err) {
       dbg(err);
       callback(generateError(err));
