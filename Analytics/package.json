@@ -1,0 +1,16 @@
+{
+  "name": "analytics",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "mqtt": "^5.14.1",
+    "nats": "^2.29.3"
+  }
+}

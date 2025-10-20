@@ -90,3 +90,18 @@ services:
     depends_on:
       broker:
         condition: service_healthy
+
+  analytics:
+    build:
+      context: ./Analytics
+      dockerfile: ./Dockerfile
+    environment:
+      MQTT_HOST: ${MQTT_HOST}
+      MQTT_PORT: ${MQTT_PORT}
+      NATS_HOST: ${NATS_HOST}
+      NATS_PORT: ${NATS_PORT}
+    depends_on:
+      broker:
+        condition: service_healthy
+      nats:
+        condition: service_healthy

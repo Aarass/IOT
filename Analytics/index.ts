@@ -1,4 +1,3 @@
-import "dotenv/config";
 import mqtt from "mqtt";
 import nats, { StringCodec } from "nats";
 
@@ -35,13 +34,10 @@ const natsClient = await nats.connect({
 
 console.log("Succesfully connected to the nats broker");
 
-//
-//
-
-await mqttClient.subscribeAsync("abnormal");
+mqttClient.subscribe("powerConsumption");
 
 mqttClient.on("message", (topic, message) => {
-  if (topic !== "abnormal") {
+  if (topic !== "powerConsumption") {
     console.error("Got message for unexpected topic: " + topic);
   }
 
@@ -49,21 +45,9 @@ mqttClient.on("message", (topic, message) => {
     const data = JSON.parse(message.toString());
     console.log(data);
   } catch (err) {
-    console.error("Coulnd't parse the message", err);
+    console.error("Couldn't parse the message", err);
   }
 });
 
-//
-//
-
 const sc = StringCodec();
-const sub = natsClient.subscribe("analytics");
-
-(async () => {
-  for await (const m of sub) {
-    console.log(`[${sub.getProcessed()}]: ${sc.decode(m.data)}`);
-  }
-  console.log("subscription closed");
-})();
-
-await sub.closed;
+natsClient.publish("analytics", sc.encode("analitika"));
