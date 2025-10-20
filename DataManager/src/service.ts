@@ -20,6 +20,7 @@ export const dataManagerService: IDataManager = {
     call: grpc.ServerUnaryCall<PostPowerConsumptionRequest, PowerConsumption>,
     callback: grpc.sendUnaryData<PowerConsumption>,
   ) {
+    console.log("Got power consumption report");
     try {
       const res = await PowerConsumptionRepository.createPowerConsumptionRecord(
         {

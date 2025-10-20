@@ -2,8 +2,6 @@
 using MQTTnet;
 using EventManager;
 
-var rand = new Random();
-
 var client = await ConnectToBroker(Guid.NewGuid().ToString());
 client.ApplicationMessageReceivedAsync += OnMesage;
 await client.SubscribeAsync("powerConsumption");
@@ -33,8 +31,10 @@ async Task OnMesage(MqttApplicationMessageReceivedEventArgs e)
         return;
     }
 
-    if (rand.Next(0, 11) > 9)
+    if (data.voltage < 200 || data.voltage > 240)
     {
+        Console.WriteLine("Abnormal voltage value");
+        Console.WriteLine(data);
         await NotifyAbnormalValues(data);
     }
 
