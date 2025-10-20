@@ -1,0 +1,48 @@
+asyncapi: 3.0.0
+info:
+  title: App
+  version: "1.0.0"
+  description: Simple IOT data processing app.
+servers:
+  emqx:
+    host: localhost:1883
+    protocol: mqtt
+channels:
+  consumption:
+    address: "consumption"
+    messages:
+      consumptionMeasuredMessage:
+        name: ConsumptionMeasured
+        payload:
+          type: object
+          properties:
+            id:
+              type: integer
+              minimum: 0
+              description: ID of the record.
+            sensorId:
+              type: string
+              description: ID of the sensor that measured the power consumption.
+            datetime:
+              type: string
+              format: date-time
+              description: Date and time when the measurement occured.
+            activeEnergy:
+              type: number
+              description: Represents the active energy consumed every minute (in watt hour) in the household
+            globalReactivePower:
+              type: number
+              description: Measured reactive power
+            voltage:
+              type: number
+              description: Measured voltage
+            globalIntensity:
+              type: number
+              description: Measured intensity
+
+operations:
+  broadcastMeasurement:
+    action: "send"
+    summary: Broadcasts measurement that it received from a sensor.
+    channel:
+      $ref: "#/channels/consumption"
