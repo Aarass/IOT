@@ -25,7 +25,16 @@ services:
       interval: 5s
       timeout: 3s
       retries: 5
-      start_period: 5s
+
+  nats:
+    image: nats:2-alpine
+    ports:
+      - 4222:4222
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "http://localhost:8222/healthz"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
 
   datamanager:
     build:
@@ -63,8 +72,12 @@ services:
     environment:
       MQTT_HOST: ${MQTT_HOST}
       MQTT_PORT: ${MQTT_PORT}
+      NATS_HOST: ${NATS_HOST}
+      NATS_PORT: ${NATS_PORT}
     depends_on:
       broker:
+        condition: service_healthy
+      nats:
         condition: service_healthy
 
   eventmanager:
