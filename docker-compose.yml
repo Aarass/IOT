@@ -9,12 +9,23 @@ services:
       - 5432:5432
     environment:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
 
   broker:
     image: emqx:latest
     ports:
       - 18083:18083
       - 1883:1883
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:18083/status"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+      start_period: 5s
 
   datamanager:
     build:
@@ -27,6 +38,11 @@ services:
       MQTT_PORT: ${MQTT_PORT}
     ports:
       - "${MANAGER_PORT}:${MANAGER_PORT}"
+    depends_on:
+      db:
+        condition: service_healthy
+      broker:
+        condition: service_healthy
 
   gateway:
     build:
@@ -37,6 +53,8 @@ services:
       GRPC_SERVER: "http://datamanager:${MANAGER_PORT}"
     ports:
       - "${GATEWAY_PORT}:${GATEWAY_PORT}"
+    depends_on:
+      - datamanager
 
   mqttclient:
     build:
@@ -45,6 +63,9 @@ services:
     environment:
       MQTT_HOST: ${MQTT_HOST}
       MQTT_PORT: ${MQTT_PORT}
+    depends_on:
+      broker:
+        condition: service_healthy
 
   eventmanager:
     build:
@@ -53,3 +74,6 @@ services:
     environment:
       MQTT_HOST: ${MQTT_HOST}
       MQTT_PORT: ${MQTT_PORT}
+    depends_on:
+      broker:
+        condition: service_healthy
