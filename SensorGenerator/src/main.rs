@@ -48,20 +48,20 @@ fn main() -> std::io::Result<()> {
 
                 match req.send() {
                     Ok(response) => {
-                        println!("Got response");
+                        // println!("Got response");
 
                         if response.status().is_success() {
-                            println!("Success");
+                            println!("Success {}", record.time);
                         } else if response.status().is_server_error() {
                             println!("Server Error");
                         } else {
                             println!("Something went wrong");
                         }
 
-                        println!(
-                            "Response: {}",
-                            response.text().unwrap_or("No response text".to_owned())
-                        );
+                        // println!(
+                        //     "Response: {}",
+                        //     response.text().unwrap_or("No response text".to_owned())
+                        // );
 
                         sleep(Duration::from_millis(args.sleep));
                     }

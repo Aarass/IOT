@@ -6,6 +6,8 @@ COPY ./requirements.txt /code/requirements.txt
 
 RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
 
-COPY . /code/app
+COPY ./training/ml_model.pkl /code/app/training/ml_model.pkl
+COPY ./main.py /code/app/main.py
 
-CMD ["fastapi", "run", "app/main.py", "--port", "8000"]
+WORKDIR /code/app
+CMD ["fastapi", "run", "main.py", "--port", "8000"]

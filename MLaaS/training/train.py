@@ -104,18 +104,17 @@ print("MAE:", mae)
 
 joblib.dump(model, "ml_model.pkl")
 
-
+# #
+# #
+# #
+# #
+# # uzmi poslednjih 60 merenja iz tabele
+# test = np.concatenate(
+#     [[podniz[4] for podniz in df.values[-60:]], df.values[-60][:-1]]
+# ).reshape(1, -1)
+# assert len(test[0]) == 64
 #
+# print(test)
 #
-#
-#
-# uzmi poslednjih 60 merenja iz tabele
-test = np.concatenate(
-    [[podniz[4] for podniz in df.values[-60:]], df.values[-60][:-1]]
-).reshape(1, -1)
-assert len(test[0]) == 64
-
-print(test)
-
-prediction = model.predict(test)[0]
-print("Predvidjena prosecna potrosnja u narednih 10 minuta:", prediction)
+# prediction = model.predict(test)[0]
+# print("Predvidjena prosecna potrosnja u narednih 10 minuta:", prediction)
