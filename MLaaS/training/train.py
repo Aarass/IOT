@@ -6,7 +6,7 @@ from sklearn.metrics import mean_absolute_error
 from sklearn.model_selection import train_test_split
 
 df = pd.read_csv(
-    "./data_small.csv",
+    "./data.csv",
     delimiter=";",
     usecols=[
         "Date",

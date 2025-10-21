@@ -135,7 +135,7 @@ struct Args {
     input_file: String,
 
     /// Number of lines to skip
-    #[arg(long, default_value_t = 1)]
+    #[arg(long, default_value_t = 547598)]
     skip: u32,
 
     /// Number of lines to use
