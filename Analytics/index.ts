@@ -17,6 +17,14 @@ if (process.env.NATS_PORT === undefined) {
   throw "There is no NATS_HOST env variable";
 }
 
+if (process.env.MLAAS_HOST === undefined) {
+  throw "There is no NATS_HOST env variable";
+}
+
+if (process.env.MLAAS_PORT === undefined) {
+  throw "There is no NATS_HOST env variable";
+}
+
 const mqttClientId = crypto.randomUUID();
 
 let mqttClient = await mqtt.connectAsync({

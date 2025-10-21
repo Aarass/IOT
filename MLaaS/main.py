@@ -1,15 +1,23 @@
-from typing import Union
+from datetime import datetime
+from typing import List
 
 from fastapi import FastAPI
+from pydantic import BaseModel
+
+
+class Item(BaseModel):
+    datetime: datetime
+    active_energy: float
+
+
+class Body(BaseModel):
+    items: List[Item]
+
 
 app = FastAPI()
 
 
-@app.get("/")
-def read_root():
-    return {"Hello": "World"}
-
-
-@app.get("/items/{item_id}")
-def read_item(item_id: int, q: Union[str, None] = None):
-    return {"item_id": item_id, "q": q}
+@app.post("/items/")
+async def create_item(body: Body):
+    print(body)
+    return body
