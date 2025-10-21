@@ -1,53 +1,38 @@
 import mqtt from "mqtt";
 import nats, { JSONCodec } from "nats";
 import { BatchBuffer } from "./batch";
+import type { AnalysisResult } from "./AnalysisResult";
+
+const [mqttClient, natsClient, mlaasURL] = await connect();
 
 const encoder = JSONCodec();
+const buffer = new BatchBuffer<object>(60, onFull);
 
-if (process.env.MQTT_HOST === undefined) {
-  throw "There is no MQTT_HOST env variable";
+mqttClient.subscribe("powerConsumption");
+mqttClient.on("message", (topic, message) =>
+  topic === "powerConsumption"
+    ? onPowerConsumption(message)
+    : console.log("Got message for topic", topic),
+);
+
+async function onPowerConsumption(message: Buffer<ArrayBufferLike>) {
+  try {
+    const data = JSON.parse(message.toString()) as object;
+
+    if (typeof data !== "object") {
+      console.error("Internal error");
+      return;
+    }
+
+    buffer.add(data);
+  } catch (err) {
+    console.error("Couldn't parse the message", err);
+  }
 }
 
-if (process.env.MQTT_PORT === undefined) {
-  throw "There is no MQTT_HOST env variable";
-}
-
-if (process.env.NATS_HOST === undefined) {
-  throw "There is no NATS_HOST env variable";
-}
-
-if (process.env.NATS_PORT === undefined) {
-  throw "There is no NATS_HOST env variable";
-}
-
-if (process.env.MLAAS_HOST === undefined) {
-  throw "There is no NATS_HOST env variable";
-}
-
-if (process.env.MLAAS_PORT === undefined) {
-  throw "There is no NATS_HOST env variable";
-}
-
-const mlaasURL = `${process.env.MLAAS_HOST}:${process.env.MLAAS_PORT}/predict`;
-const mqttClientId = crypto.randomUUID();
-
-let mqttClient = await mqtt.connectAsync({
-  host: process.env.MQTT_HOST,
-  port: parseInt(process.env.MQTT_PORT),
-  clientId: mqttClientId,
-  clean: true,
-});
-
-console.log("Succesfully connected to the mqqt broker");
-
-const natsClient = await nats.connect({
-  servers: `${process.env.NATS_HOST}:${process.env.NATS_PORT}`,
-});
-
-console.log("Succesfully connected to the nats broker");
-
-const buffer = new BatchBuffer<object>(60, async (data) => {
+async function onFull(data: object[]) {
   console.log("Batch full");
+
   try {
     const res = await analyze({
       items: data,
@@ -62,28 +47,7 @@ const buffer = new BatchBuffer<object>(60, async (data) => {
   } catch (err) {
     console.error(err);
   }
-});
-
-mqttClient.subscribe("powerConsumption");
-
-mqttClient.on("message", (topic, message) => {
-  if (topic !== "powerConsumption") {
-    console.error("Got message for unexpected topic: " + topic);
-  }
-
-  try {
-    const data = JSON.parse(message.toString()) as object;
-
-    if (typeof data !== "object") {
-      console.error("Internal error");
-      return;
-    }
-
-    buffer.add(data);
-  } catch (err) {
-    console.error("Couldn't parse the message", err);
-  }
-});
+}
 
 async function analyze(body: any): Promise<AnalysisResult | null> {
   const request = new Request(mlaasURL, {
@@ -114,6 +78,58 @@ async function analyze(body: any): Promise<AnalysisResult | null> {
   }
 }
 
-interface AnalysisResult {
-  predict: number;
+async function connect() {
+  if (process.env.MQTT_HOST === undefined) {
+    throw "There is no MQTT_HOST env variable";
+  }
+
+  if (process.env.MQTT_PORT === undefined) {
+    throw "There is no MQTT_HOST env variable";
+  }
+
+  if (process.env.NATS_HOST === undefined) {
+    throw "There is no NATS_HOST env variable";
+  }
+
+  if (process.env.NATS_PORT === undefined) {
+    throw "There is no NATS_HOST env variable";
+  }
+
+  if (process.env.MLAAS_HOST === undefined) {
+    throw "There is no NATS_HOST env variable";
+  }
+
+  if (process.env.MLAAS_PORT === undefined) {
+    throw "There is no NATS_HOST env variable";
+  }
+
+  const mlaasURL = `${process.env.MLAAS_HOST}:${process.env.MLAAS_PORT}/predict`;
+  const mqttClientId = crypto.randomUUID();
+
+  const mqttClient = await mqtt.connectAsync({
+    host: process.env.MQTT_HOST,
+    port: parseInt(process.env.MQTT_PORT),
+    clientId: mqttClientId,
+    clean: true,
+  });
+
+  console.log("Succesfully connected to the mqqt broker");
+
+  const natsClient = await nats.connect({
+    servers: `${process.env.NATS_HOST}:${process.env.NATS_PORT}`,
+  });
+
+  console.log("Succesfully connected to the nats broker");
+
+  return [mqttClient, natsClient, mlaasURL] as const;
 }
+
+// function logAvg(objs: object[]) {
+//   const data = objs as { activeEnergy: number }[];
+//
+//   const avg =
+//     data.map((x) => x.activeEnergy).reduce((sum, val) => sum + val, 0) /
+//     data.length;
+//
+//   console.log(avg);
+// }
