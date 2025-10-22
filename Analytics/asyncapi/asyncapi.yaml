@@ -1,0 +1,78 @@
+asyncapi: 3.0.0
+info:
+  title: Analytics
+  version: "1.0.0"
+  description: Simple analytics service.
+servers:
+  emqx:
+    host: localhost:1883
+    protocol: mqtt
+  nats:
+    host: localhost:4222
+    protocol: nats
+channels:
+  consumption:
+    address: "consumption"
+    servers:
+      - $ref: "#/servers/emqx"
+    messages:
+      consumptionMeasuredMessage:
+        $ref: "#/components/messages/consumptionMeasuredMessage"
+  analysis:
+    address: "analysis"
+    servers:
+      - $ref: "#/servers/nats"
+    messages:
+      consumptionMeasuredMessage:
+        $ref: "#/components/messages/consumptionMeasuredMessage"
+
+operations:
+  receiveMeasurement:
+    action: "receive"
+    summary: Receives sensor measurement.
+    channel:
+      $ref: "#/channels/consumption"
+  publishPredict:
+    action: "send"
+    summary: Publishes consumption predict that it receives from MLaaS.
+    channel:
+      $ref: "#/channels/analysis"
+
+components:
+  messages:
+    consumptionMeasuredMessage:
+      name: ConsumptionMeasured
+      payload:
+        type: object
+        properties:
+          id:
+            type: integer
+            minimum: 0
+            description: ID of the record.
+          sensorId:
+            type: string
+            description: ID of the sensor that measured the power consumption.
+          datetime:
+            type: string
+            format: date-time
+            description: Date and time when the measurement occured.
+          activeEnergy:
+            type: number
+            description: Represents the active energy consumed every minute (in watt hour) in the household
+          globalReactivePower:
+            type: number
+            description: Measured reactive power
+          voltage:
+            type: number
+            description: Measured voltage
+          globalIntensity:
+            type: number
+            description: Measured intensity
+
+    predict:
+      name: PredictMessage
+      payload:
+        type: object
+        properties:
+          predict:
+            type: number
